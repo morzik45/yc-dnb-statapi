@@ -1,0 +1,25 @@
+
+name: Push and Deploy Serverless function
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: goodsmileduck/yandex-serverless-action@v1
+        with:
+          token: ${{ secrets.TOKEN }}
+          function_id: ${{ secrets.FUNCTION_ID }}
+          runtime: 'golang114'
+          entrypoint: 'main.Handler'
+          environment: MONGO_URI=${{ secrets.MONGO_URI }},DB_NAME=${{ secrets.DB_NAME }}
+          memory: '128'
+          execution_timeout: '7'
+          service_account: ${{ secrets.SERVICE_ACCOUNT }}
+          source: '.'
+          exclude: '.git/,.github/,/.gitignore'
